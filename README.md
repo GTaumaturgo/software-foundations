@@ -10,4 +10,6 @@ My solutions to the Software Foundations Book https://softwarefoundations.cis.up
 |  Lists        |     Completed      | Completed               |
 | Poly          |     Completed      | Completed               |
 | Tactics       |     Completed      | all left                |
+| Logic         |     1 left         | some left               |
+
 
