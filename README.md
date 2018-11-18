@@ -11,5 +11,5 @@ My solutions to the Software Foundations Book https://softwarefoundations.cis.up
 | Poly          |     Completed      | Completed               |
 | Tactics       |     Completed      | all left                |
 | Logic         |     1 left         | some left               |
-
-
+| IndProp       |     many left      | many left               |
+| Maps          |     3 left         | some left               |
