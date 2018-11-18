@@ -274,8 +274,8 @@ Admitted.
 
 Lemma beq_stringP : forall x y, reflect (x = y) (beq_string x y).
 Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
+  intros x y. apply iff_reflect. rewrite beq_string_true_iff. reflexivity.
+Qed.
 
 (** Now, given [string]s [x1] and [x2], we can use the [destruct (beq_stringP
     x1 x2)] to simultaneously perform case analysis on the result of
@@ -290,8 +290,11 @@ Proof.
 
 Theorem t_update_same : forall X x (m : total_map X),
     m & { x --> m x } = m.
-  Proof.
-  (* FILL IN HERE *) Admitted.
+Proof.
+  intros X x m. apply functional_extensionality.
+  destruct x.
+Admitted.
+
 (** [] *)
 
 (** **** Exercise: 3 stars, recommended (t_update_permute)  *)
@@ -305,8 +308,12 @@ Theorem t_update_permute : forall (X:Type) v1 v2 x1 x2
   m & { x2 --> v2 ; x1 --> v1 }
   =  m & { x1 --> v1 ; x2 --> v2 }.
 Proof.
-  (* FILL IN HERE *) Admitted.
-(** [] *)
+  intros X v1 v2 x1 x2 m Hneq. apply functional_extensionality.
+  intros x. unfold t_update. destruct (beq_string x1 x) eqn: H1.
+  - apply beq_string_true_iff in H1. rewrite <- H1. rewrite <- beq_string_false_iff in Hneq.
+    rewrite Hneq. reflexivity.
+  - reflexivity.
+Qed.
 
 (* ################################################################# *)
 (** * Partial maps *)
