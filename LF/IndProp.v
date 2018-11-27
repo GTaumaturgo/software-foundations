@@ -482,7 +482,16 @@ Theorem ev_plus_plus : forall n m p,
   ev (n+m) -> ev (n+p) -> ev (m+p).
 Proof.
   intros n m p H1 H2. 
-Admitted.
+  apply (ev_ev__ev (n+p)).
+  + rewrite (plus_comm n p). rewrite (plus_comm m p). rewrite plus_swap. rewrite plus_assoc.  
+    rewrite plus_assoc. 
+    rewrite <- double_plus.
+    rewrite <- (plus_assoc (double p) n m).
+    apply ev_sum.
+    - apply ev_double.
+    - apply H1.
+  + apply H2.
+Qed.
 (** [] *)
 
 (* ################################################################# *)
@@ -570,6 +579,9 @@ Inductive next_even : nat -> nat -> Prop :=
 (** Define an inductive binary relation [total_relation] that holds
     between every pair of natural numbers. *)
 
+Inductive total_relation : nat -> nat -> Prop :=
+  tr_xy : forall (x y : nat), total_relation x y.
+
 (* FILL IN HERE *)
 (** [] *)
 
@@ -577,8 +589,18 @@ Inductive next_even : nat -> nat -> Prop :=
 (** Define an inductive binary relation [empty_relation] (on numbers)
     that never holds. *)
 
+Inductive empty_relation : nat -> nat -> Prop :=
+  empty_xy : forall (x y : nat), y = x /\ y <> x -> empty_relation x y.
+
 (* FILL IN HERE *)
-(** [] *)
+(** [
+
+~ empty_relation will mean negative empty relation that holds forall x,y.
+doing x /\ y basically gets us the possible property that may hold for both
+x and y. using inequality operator means empty relation holds whenever there is
+some property unprovable for x,y.
+in other words it does not hold at all.
+] *)
 
 (** **** Exercise: 3 stars, optional (le_exercises)  *)
 (** Here are a number of facts about the [<=] and [<] relations that
@@ -650,32 +672,58 @@ Proof.
   apply le_S. assumption.
 Qed.
 
+Check le_n.
+
 Theorem leb_complete : forall n m,
   leb n m = true -> n <= m.
 Proof.
-  (* FILL IN HERE *) Admitted.
-
+  intros n m H.
+  induction m.
+  - induction n.
+    + reflexivity.
+    + inversion H.
+  - induction n.
+    + inversion H. 
+Admitted.
 (** Hint: The next one may be easiest to prove by induction on [m]. *)
+
 
 Theorem leb_correct : forall n m,
   n <= m ->
   leb n m = true.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros n m H.
+  induction m.
+  + induction n.
+    - reflexivity.
+    - inversion H.
+  + inversion H.
+    - rewrite <- H0. rewrite <- leb_refl. reflexivity.
+    - apply IHm in H1.
+      { induction n.
+          simpl. reflexivity.
+Admitted.
+      
 
 (** Hint: This theorem can easily be proved without using [induction]. *)
 
 Theorem leb_true_trans : forall n m o,
   leb n m = true -> leb m o = true -> leb n o = true.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros n m o Hnm Hmo.
+  apply leb_correct. apply leb_complete in Hnm. apply leb_complete in Hmo.
+  apply (le_trans n m). apply Hnm. apply Hmo.
+Qed.
 (** [] *)
 
 (** **** Exercise: 2 stars, optional (leb_iff)  *)
 Theorem leb_iff : forall n m,
   leb n m = true <-> n <= m.
 Proof.
-  (* FILL IN HERE *) Admitted.
+  split.
+  - apply leb_complete.
+  - apply leb_correct.
+Qed.
 (** [] *)
 
 Module R.
@@ -716,12 +764,27 @@ Definition manual_grade_for_R_provability : option (prod nat string) := None.
     Figure out which function; then state and prove this equivalence
     in Coq? *)
 
-Definition fR : nat -> nat -> nat
-  (* REPLACE THIS LINE WITH ":= _your_definition_ ." *). Admitted.
+Definition fR : nat -> nat -> nat := fun x y => x+y.
+
+(* the relation R encodes the summation function *)
 
 Theorem R_equiv_fR : forall m n o, R m n o <-> fR m n = o.
 Proof.
-(* FILL IN HERE *) Admitted.
+  split.
+  - intros H. induction H.
+    + reflexivity.
+    + simpl. rewrite -> IHR. reflexivity.
+    + unfold fR. unfold fR in IHR. rewrite <- plus_n_Sm. rewrite IHR. reflexivity.
+    + simpl in IHR. inversion IHR.  unfold fR in H1. rewrite <- plus_n_Sm in H1. unfold fR.
+      inversion H1. reflexivity.
+    + unfold fR. rewrite plus_comm. unfold fR in IHR. apply IHR.
+  - unfold fR. generalize dependent n. generalize dependent o. induction m.
+    + simpl. intros o n H. rewrite H. destruct H. induction n.
+      { simpl. apply c1.  }
+      { simpl. apply c3. apply IHn. }
+    + simpl. intros o n H. rewrite <- H. apply c2. apply IHm. reflexivity.
+Qed. 
+
 (** [] *)
 
 End R.
@@ -994,13 +1057,23 @@ Qed.
 Lemma empty_is_empty : forall T (s : list T),
   ~ (s =~ EmptySet).
 Proof.
-  (* FILL IN HERE *) Admitted.
+  intros.
+  unfold not.
+  intros H.
+  inversion H.
+Qed.
 
 Lemma MUnion' : forall T (s : list T) (re1 re2 : @reg_exp T),
   s =~ re1 \/ s =~ re2 ->
   s =~ Union re1 re2.
 Proof.
-  (* FILL IN HERE *) Admitted.
+   intros.
+  destruct H.
+  apply MUnionL.
+  exact H.
+  apply MUnionR.
+  exact H.
+Qed.
 
 (** The next lemma is stated in terms of the [fold] function from the
     [Poly] chapter: If [ss : list (list T)] represents a sequence of
