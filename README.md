@@ -15,3 +15,6 @@ My solutions to the Software Foundations Book https://softwarefoundations.cis.up
 | Maps          |     1 left         | 1 left                           |
 | ProofObjects  |     completed      | 2 left (leibniz_2 & ex_ev_Sn)    |
 | IndPrinciples | completed          | completed                        |
+| Rel           | completed          | 2                                |
+| Imp           |                    |                                  |
+
