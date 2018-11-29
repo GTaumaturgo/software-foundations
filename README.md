@@ -20,6 +20,6 @@ My solutions to the Software Foundations Book https://softwarefoundations.cis.up
 | ImpParser     | completed          | completed                        |
 | ImpCEvalfun   | 1 left             | -                                |
 | Extraction    | -                  |   -                              |
-| Auto          | all                | all                              |
+| Auto          | -                  | -                                |
 
 
