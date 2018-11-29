@@ -16,5 +16,10 @@ My solutions to the Software Foundations Book https://softwarefoundations.cis.up
 | ProofObjects  |     completed      | 2 left (leibniz_2 & ex_ev_Sn)    |
 | IndPrinciples | completed          | completed                        |
 | Rel           | completed          | 2                                |
-| Imp           |                    |                                  |
+| Imp           |  many              |  many                            |
+| ImpParser     | completed          | completed                        |
+| ImpCEvalfun   | all                | all                              |
+| Extraction    | -                  |   -                              |
+| Auto          | all                | all                              |
+
 
